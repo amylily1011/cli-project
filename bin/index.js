@@ -35,7 +35,7 @@ program
 // command: maas deploy-all
 program
   .command("deploy-all")
-  .description("Deploy one machine.")
+  .description("Deploy all machines in allocated state.")
   .action(() => {
     deploy();
   });
