@@ -19,6 +19,7 @@
     "colors": "^1.4.0",
     "commander": "^6.0.0",
     "inquirer": "^7.3.3",
+    "inquirer-autocomplete-prompt": "^1.0.2",
     "inquirer-search-list": "^1.2.6",
     "lodash": "^4.17.19",
     "pad": "^3.2.0"

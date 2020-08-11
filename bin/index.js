@@ -13,6 +13,9 @@ const commission = require("../lib/commission");
 //to add machine as a subcommand
 const machine = program.command("machine");
 
+//import list one machine
+const listOne = require("../lib/list_one");
+
 //command: maas machine list
 machine
   .command("list")
@@ -24,12 +27,16 @@ machine
 
 //command: maas list [--format] <json>
 program
-  .command("list")
+  .command("list [MACHINE_NAME]")
   .alias("ls")
   .option("--format <type>")
   .description("List all machines.")
-  .action(function (cmdObj) {
-    cmdObj.format ? console.log(JSON.stringify(machines)) : list();
+  .action(function (MACHINE_NAME, cmdObj) {
+    MACHINE_NAME
+      ? listOne(MACHINE_NAME)
+      : cmdObj.format
+      ? console.log(JSON.stringify(machines))
+      : list();
   });
 
 // command: maas deploy-all
