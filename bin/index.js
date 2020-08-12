@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 const program = require("commander");
+const pad = require("pad");
+const colors = require("colors");
+
 const { machines, commands } = require("../lib/values");
 
 //import function to deploy
@@ -39,12 +42,25 @@ program
       : list();
   });
 
-// command: maas deploy-all
+// command: maas deploy
 program
-  .command("deploy-all")
-  .description("Deploy all machines in allocated state.")
-  .action(() => {
-    deploy();
+  .command("deploy <MACHINE_NAME | status>")
+  .description(
+    "Deploy all machines by status = [ allocated | ready]. You can deploy individual or multiple machines" +
+      "\nby parsing the $MACHINE_NAME as argument or machine status as argument."
+  )
+  .usage("<$MACHINE_NAME or status = ready | allocated>".gray)
+  .action((status) => {
+    deploy(status);
+  })
+  .on("--help", () => {
+    console.log("");
+    console.log("Example: maas deploy status=ready\n");
+    console.log(
+      pad(colors.gray("[status = allocated | ready ]"), 20),
+      "deploy all machines by status."
+    );
+    console.log("");
   });
 
 // command: maas commission <MACHINE_NAME>
@@ -101,17 +117,11 @@ program
         " [MACHINE_NAME]" +
         "     Commission a machine in MAAS."
     );
+
     console.log(
-      " commission-all".gray +
-        "                Commission all NEW machines in MAAS."
+      " deploy".green + " [MACHINE_NAME]" + "         Deploy a machine in MAAS."
     );
-    console.log(
-      " deploy".gray + " [MACHINE_NAME]" + "         Deploy a machine in MAAS."
-    );
-    console.log(
-      " deploy-all".green +
-        "                    Deploy all ALLOCATED machines in MAAS."
-    );
+
     console.log(
       " release".gray +
         " [MACHINE_NAME]" +
