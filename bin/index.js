@@ -79,6 +79,7 @@ program
     console.log(
       "\nWelcome to MAAS CLI. MAAS CLI controls your virtual machines in MAAS."
     );
+    console.log("MAAS version: maas 2.9.1~alpha".blue);
     console.log(
       "\nUsage:".gray +
         " maas [MAAS object] [ACTION] [OPTIONS] [ARGUMENTS]".gray
@@ -104,14 +105,9 @@ program
     //Taking actions
     console.log("\nTaking action: ");
     console.log(
-      " allocate".gray +
-        " [MACHINE_NAME]" +
-        "       Allocate a machine in MAAS."
+      " allocate" + " [MACHINE_NAME]" + "       Allocate a machine in MAAS."
     );
-    console.log(
-      " allocate-all".gray +
-        "                  Allocate all READY machines in MAAS."
-    );
+
     console.log(
       " commission".green +
         " [MACHINE_NAME]" +
