@@ -5,8 +5,13 @@ const colors = require("colors");
 
 const { machines, commands } = require("../lib/values");
 
+const standard_pad = 15;
+const long_pad = 20;
 //import function to deploy
 const deploy = require("../lib/deploy");
+
+//import help
+const help = require("../lib/help");
 
 // import function to list
 const list = require("../lib/list");
@@ -19,21 +24,59 @@ const machine = program.command("machine");
 //import list one machine
 const listOne = require("../lib/list_one");
 
+//import object
+const object = require("../lib/object");
+
+const { green } = require("colors/safe");
+
 //command: maas machine list
 machine
   .command("list")
   .alias("ls")
-  .option("--format <type>")
+  .option(
+    "--format <type>",
+    " Display the output in other format - json, csv, yaml, value."
+  )
+  .description(
+    "List all machines or a specific machine in a table format. \nYou can either parse an argument to define which machine(s)\nto list such as machine name,status, machine id, or other\nattributes using filter. You may also specify which columns \nyou would like to list on the table. "
+  )
   .action(function (cmdObj) {
     cmdObj.format ? console.log(JSON.stringify(machines)) : list();
   });
 
 //command: maas list [--format] <json>
 program
-  .command("list [MACHINE_NAME]")
+  .command("list [MACHINE_NAME] | [id]")
   .alias("ls")
-  .option("--format <type>")
-  .description("List all machines.")
+  .option(
+    "--format <type>",
+    "Display the output in other format ( json | csv | yaml | value ).",
+    "table"
+  )
+  .option(
+    "--status <status>",
+    "There are 6 statuses - fail, new, ready, allocated, deployed, broken."
+  )
+  .option(
+    "-c, --column <column names>",
+    "Use this flag to specify any columns you want to display in the output, it will override the default columns."
+  )
+  .description(
+    "List all machines or a specific machine in a table format. You can either parse an argument\nto define which machine(s) to list such as machine name,status, machine id, or other attributes\nusing filter. You may also specify which columns you would like to list on the table."
+  )
+  .on("--help", () => {
+    console.log("\nExamples:".bold);
+    console.log(
+      "To list all machines with a ready status.\n" +
+        " Try: " +
+        "maas list --status ready".cyan
+    );
+    console.log(
+      "\nCustomise columns headers in the list to show FQDN, status, core, \narchitecture, and pool.\n" +
+        " Try: " +
+        "maas list -c FQDN,status,core,arch,pool".cyan
+    );
+  })
   .action(function (MACHINE_NAME, cmdObj) {
     MACHINE_NAME
       ? listOne(MACHINE_NAME)
@@ -71,86 +114,17 @@ program
     commission(MACHINE_NAME);
   });
 
+// command: maas object
+program.command("object list").action(() => {
+  object();
+});
+
 // help command
 program
-  .usage("[MAAS object] [ACTION] [OPTIONS] [ARGUMENTS]".gray)
-  .version("maas 2.9.1~alpha")
+  .usage("[MAAS object] [ACTION] [OPTIONS] [ARGUMENTS]")
+  .version("2.9.1~alpha")
   .action(() => {
-    console.log(
-      "\nWelcome to MAAS CLI. MAAS CLI controls your virtual machines in MAAS."
-    );
-    console.log("MAAS version: maas 2.9.1~alpha".blue);
-    console.log(
-      "\nUsage:".gray +
-        " maas [MAAS object] [ACTION] [OPTIONS] [ARGUMENTS]".gray
-    );
-    //Basic commands
-    console.log("\nBasic commands: ");
-    console.log(
-      " list".green + "                          List all machines in MAAS."
-    );
-    console.log(
-      " list".green +
-        " [MACHINE_NAME]" +
-        "           List a machine in MAAS with name [MACHINE_NAME]."
-    );
-    console.log(
-      " create".gray + "                        Create a machine in MAAS."
-    );
-    console.log(
-      " delete".gray +
-        " [MACHINE_NAME]" +
-        "         Delete a machine in MAAS with name [MACHINE_NAME]."
-    );
-    //Taking actions
-    console.log("\nTaking action: ");
-    console.log(
-      " allocate" + " [MACHINE_NAME]" + "       Allocate a machine in MAAS."
-    );
-
-    console.log(
-      " commission".green +
-        " [MACHINE_NAME]" +
-        "     Commission a machine in MAAS."
-    );
-
-    console.log(
-      " deploy".green + " [MACHINE_NAME]" + "         Deploy a machine in MAAS."
-    );
-
-    console.log(
-      " release".gray +
-        " [MACHINE_NAME]" +
-        "        Release a machine that is deployed or allocated in MAAS."
-    );
-    //Node management commands:
-    console.log("\nNode management commands: ");
-    console.log(
-      " set-config-timeout".gray + "            Set deployment timeout."
-    );
-    console.log(
-      " set-config-kernal".gray +
-        "             Set a minimum kernel for all new and commissioned machines."
-    );
-    console.log(
-      " disable-proxy".gray + "                 Disable proxying completely."
-    );
-    //Toubleshooting and debugging commands:
-    console.log("\nTroubleshooting and debugging commands: ");
-    console.log(
-      " log".gray + " [MACHINE_NAME]" + "            Show machine logs."
-    );
-
-    //Options:
-    console.log("\nOptions: ");
-    console.log(" -h,--help" + "            Display help for command.");
-    console.log(" -V,--version" + "         Output the version number.");
-    console.log(
-      " --format" +
-        " <type>".gray +
-        "      Display the output in other <type> format, such as json or yaml."
-    );
-    console.log("\n");
+    help("2.9.1~alpha");
   });
 
 program.program.parse(process.argv);
