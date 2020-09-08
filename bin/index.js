@@ -87,7 +87,7 @@ program
 
 // command: maas deploy
 program
-  .command("deploy <MACHINE_NAME | status>")
+  .command("deploy <MACHINE_NAME> | <status>")
   .description(
     "Deploy all machines by status = [ allocated | ready]. You can deploy individual or multiple machines" +
       "\nby parsing the $MACHINE_NAME as argument or machine status as argument."
