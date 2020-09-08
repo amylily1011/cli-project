@@ -9,7 +9,8 @@ const standard_pad = 15;
 const long_pad = 20;
 //import function to deploy
 const deploy = require("../lib/deploy");
-
+const deploy_default = require("../lib/deploy_default");
+const deploy_wait = require("../lib/deploy_wait");
 //import help
 const help = require("../lib/help");
 
@@ -46,12 +47,11 @@ machine
 
 //command: maas list [--format] <json>
 program
-  .command("list [MACHINE_NAME] | [id]")
+  .command("list [MACHINE_NAME]")
   .alias("ls")
   .option(
     "--format <type>",
-    "Display the output in other format ( json | csv | yaml | value ).",
-    "table"
+    "Display the output in other format ( json | csv | yaml | value )."
   )
   .option(
     "--status <status>",
@@ -62,7 +62,8 @@ program
     "Use this flag to specify any columns you want to display in the output, it will override the default columns."
   )
   .description(
-    "List all machines or a specific machine in a table format. You can either parse an argument\nto define which machine(s) to list such as machine name,status, machine id, or other attributes\nusing filter. You may also specify which columns you would like to list on the table."
+    "List all machines or a specific machine in a table format. You can either parse an argument\nto define which machine(s) to list such as machine name,status, machine id, or other attributes" +
+      "\nusing filter. You may also specify which columns you would like to list on the table."
   )
   .on("--help", () => {
     console.log("\nExamples:".bold);
@@ -87,21 +88,47 @@ program
 
 // command: maas deploy
 program
-  .command("deploy <MACHINE_NAME> | <status>")
+  .command("deploy [$MACHINE_NAME]")
   .description(
-    "Deploy all machines by status = [ allocated | ready]. You can deploy individual or multiple machines" +
-      "\nby parsing the $MACHINE_NAME as argument or machine status as argument."
+    "Deploy multiple machines using the status flag or a specific machine." +
+      "\nWhen other arguments are not specified, MAAS will applied default values\nto the deployment [OS=ubuntu] [release=18.04] [kernel=no]." +
+      "\n\nFor more information visit: " +
+      "https://maas.io/docs/common-cli-tasks#heading--deploy-a-node".underline
   )
-  .usage("<$MACHINE_NAME or status = ready | allocated>".gray)
-  .action((status) => {
-    deploy(status);
+  .usage("[$MACHINE_NAME] | [options]")
+  .option(
+    "-i, --interactive",
+    "Using interactive mode will help guide users through incomplete commands."
+  )
+  .option("-w, --wait", "Block the command prompt and show waiting state.")
+  .option(
+    "-s, --status <status>",
+    "Deploy machine in the described status.[ allocated | ready ]"
+  )
+  .option("--filter", "Filter machine properties to deploy multiple machines.")
+  .action(($MACHINE_NAME, cmdObj) => {
+    $MACHINE_NAME
+      ? cmdObj.interactive
+        ? deploy($MACHINE_NAME)
+        : cmdObj.wait
+        ? deploy_wait($MACHINE_NAME)
+        : deploy_default($MACHINE_NAME)
+      : deploy_default("2 machines");
   })
   .on("--help", () => {
     console.log("");
-    console.log("Example: maas deploy status=ready\n");
+    console.log("Examples:");
     console.log(
-      pad(colors.gray("[status = allocated | ready ]"), 20),
-      "deploy all machines by status."
+      "To deploy a single machine by machine name.",
+      pad("\nTry:" + " maas deploy <MACHINE_NAME>".cyan, 10)
+    );
+    console.log(
+      "\nTo deploy all machines that are allocated.",
+      pad("\nTry:" + " maas deploy -s allocated".cyan, 10)
+    );
+    console.log(
+      "\nTo deploy multiple machines with status=allocated and CPU cores=4. Separate by comma.",
+      pad("\nTry:" + " maas deploy --filter status=allocated,core=4 ".cyan, 10)
     );
     console.log("");
   });
