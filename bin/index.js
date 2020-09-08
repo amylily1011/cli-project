@@ -11,6 +11,8 @@ const long_pad = 20;
 const deploy = require("../lib/deploy");
 const deploy_default = require("../lib/deploy_default");
 const deploy_wait = require("../lib/deploy_wait");
+const deploy_error = require("../lib/deploy_error");
+
 //import help
 const help = require("../lib/help");
 
@@ -107,13 +109,26 @@ program
   )
   .option("--filter", "Filter machine properties to deploy multiple machines.")
   .action(($MACHINE_NAME, cmdObj) => {
-    $MACHINE_NAME
-      ? cmdObj.interactive
+    if ($MACHINE_NAME) {
+      cmdObj.interactive
         ? deploy($MACHINE_NAME)
         : cmdObj.wait
         ? deploy_wait($MACHINE_NAME)
-        : deploy_default($MACHINE_NAME)
-      : deploy_default("2 machines");
+        : deploy_default($MACHINE_NAME);
+    }
+
+    if (!$MACHINE_NAME) {
+      $MACHINE_NAME = "2 " + cmdObj.status + " machines";
+      cmdObj.interactive
+        ? deploy($MACHINE_NAME)
+        : cmdObj.wait
+        ? cmdObj.status
+          ? deploy_wait($MACHINE_NAME)
+          : deploy_error()
+        : cmdObj.status
+        ? deploy_default($MACHINE_NAME)
+        : deploy_error();
+    }
   })
   .on("--help", () => {
     console.log("");
