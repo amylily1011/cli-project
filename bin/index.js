@@ -31,6 +31,7 @@ const listOne = require("../lib/list_one");
 const object = require("../lib/object");
 
 const { green } = require("colors/safe");
+const list_help = require("../lib/list_help");
 
 //command: maas machine list
 machine
@@ -57,28 +58,21 @@ program
   )
   .option(
     "--status <status>",
-    "There are 6 statuses - fail, new, ready, allocated, deployed, broken."
+    "There are 6 statuses - fail, new, ready, acquired, deployed, broken."
   )
   .option(
-    "-c, --column <column names>",
-    "Use this flag to specify any columns you want to display in the output, it will override the default columns."
+    "-c, --column <attribute>",
+    pad(
+      25,
+      "Use this flag to specify any columns you want to display in the output, \nit will override the default columns."
+    )
   )
   .description(
     "List all machines or a specific machine in a table format. You can either parse an argument\nto define which machine(s) to list such as machine name,status, machine id, or other attributes" +
       "\nusing filter. You may also specify which columns you would like to list on the table."
   )
   .on("--help", () => {
-    console.log("\nExamples:".bold);
-    console.log(
-      "To list all machines with a ready status.\n" +
-        " Try: " +
-        "maas list --status ready".cyan
-    );
-    console.log(
-      "\nCustomise columns headers in the list to show FQDN, status, core, \narchitecture, and pool.\n" +
-        " Try: " +
-        "maas list -c FQDN,status,core,arch,pool".cyan
-    );
+    list_help();
   })
   .action(function (MACHINE_NAME, cmdObj) {
     MACHINE_NAME
@@ -105,7 +99,7 @@ program
   .option("-w, --wait", "Block the command prompt and show waiting state.")
   .option(
     "-s, --status <status>",
-    "Deploy machine in the described status.[ allocated | ready ]"
+    "Deploy machine in the described status.[ acquired | ready ]"
   )
   .option("--filter", "Filter machine properties to deploy multiple machines.")
   .action(($MACHINE_NAME, cmdObj) => {
@@ -138,12 +132,12 @@ program
       pad("\nTry:" + " maas deploy <MACHINE_NAME>".cyan, 10)
     );
     console.log(
-      "\nTo deploy all machines that are allocated.",
-      pad("\nTry:" + " maas deploy -s allocated".cyan, 10)
+      "\nTo deploy all machines that are acquired.",
+      pad("\nTry:" + " maas deploy -s acquired".cyan, 10)
     );
     console.log(
-      "\nTo deploy multiple machines with status=allocated and CPU cores=4. Separate by comma.",
-      pad("\nTry:" + " maas deploy --filter status=allocated,core=4 ".cyan, 10)
+      "\nTo deploy multiple machines with status=acquired and CPU cores=4. Separate by comma.",
+      pad("\nTry:" + " maas deploy --filter status=acquired,core=4 ".cyan, 10)
     );
     console.log("");
   });
