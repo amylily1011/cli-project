@@ -20,6 +20,7 @@ const help = require("../lib/help");
 const list = require("../lib/list");
 // import function to commission
 const commission = require("../lib/commission");
+const commission_default = require("../lib/commission_default");
 
 //to add machine as a subcommand
 const machine = program.command("machine");
@@ -146,8 +147,9 @@ program
 program
   .command("commission <MACHINE_NAME>")
   .description("Commission one machine by $MACHINE_NAME")
-  .action((MACHINE_NAME) => {
-    commission(MACHINE_NAME);
+  .option("-w, --wait", "Block the command prompt and show waiting state.")
+  .action((MACHINE_NAME, cmdObj) => {
+    cmdObj.wait ? commission(MACHINE_NAME) : commission_default(MACHINE_NAME);
   });
 
 // command: maas object
