@@ -59,7 +59,7 @@ program
   )
   .option(
     "--status <status>",
-    "There are 6 statuses - fail, new, ready, acquired, deployed, broken."
+    "There are 6 statuses - fail, new, ready, allocated, deployed, broken."
   )
   .option(
     "-c, --column <attribute>",
@@ -100,7 +100,7 @@ program
   .option("-w, --wait", "Block the command prompt and show waiting state.")
   .option(
     "-s, --status <status>",
-    "Deploy machine in the described status.[ acquired | ready ]"
+    "Deploy machine in the described status.[ allocated | ready ]"
   )
   .option("--filter", "Filter machine properties to deploy multiple machines.")
   .action(($MACHINE_NAME, cmdObj) => {
@@ -133,12 +133,12 @@ program
       pad("\nTry:" + " maas deploy <MACHINE_NAME>".cyan, 10)
     );
     console.log(
-      "\nTo deploy all machines that are acquired.",
-      pad("\nTry:" + " maas deploy -s acquired".cyan, 10)
+      "\nTo deploy all machines that are allocated.",
+      pad("\nTry:" + " maas deploy -s allocated".cyan, 10)
     );
     console.log(
-      "\nTo deploy multiple machines with status=acquired and CPU cores=4. Separate by comma.",
-      pad("\nTry:" + " maas deploy --filter status=acquired,core=4 ".cyan, 10)
+      "\nTo deploy multiple machines with status=allocated and CPU cores=4. Separate by comma.",
+      pad("\nTry:" + " maas deploy --filter status=allocated,core=4 ".cyan, 10)
     );
     console.log("");
   });
@@ -161,6 +161,7 @@ program.command("object list").action(() => {
 program
   .usage("[MAAS object] [ACTION] [OPTIONS] [ARGUMENTS]")
   .version("2.9.1~alpha")
+  .option("--no-color", "Disable coloring for the output.")
   .action(() => {
     help("2.9.1~alpha");
   });
