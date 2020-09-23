@@ -113,6 +113,7 @@ program
     }
 
     if (!$MACHINE_NAME) {
+      cmdObj.status ? cmdObj.status : (cmdObj.status = "allocated");
       $MACHINE_NAME = "2 " + cmdObj.status + " machines";
       cmdObj.interactive
         ? deploy($MACHINE_NAME)
