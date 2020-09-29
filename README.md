@@ -10,37 +10,61 @@ To test it out.
 Commands you can play with:
 
 Initial help (cheat sheet):
-`maas`
+```
+maas
+```
 
 List all available objects:
-`maas object list`
+```
+maas object list
+```
 
 List all machines:
-`maas list`
+```
+maas list
+```
 
 List one machine:
-`maas list [machine_name]`
+```
+maas list [machine_name]
+```
 
 List all machines in json format:
-`maas list --format json`
+```
+maas list --format json
+```
 
 Commission a machine:
-`maas commission [machine_name]`
+```
+maas commission [machine_name]
+```
 
 Deploy a machine:
-`maas deploy [machine_name]`
+```
+maas deploy [machine_name]
+```
 
 Deploy a machine and see loading state:
-`maas deploy [machine_name] --wait`
+```
+maas deploy [machine_name] --wait
+```
 
 Deploy a machine in interactive mode:
-`maas deploy [machine_name] -i`
+```
+maas deploy [machine_name] -i
+```
 
 Deploy all allocated machines with default values:
-`maas deploy -s allocated`
+```
+maas deploy -s allocated
+```
 
 Deploy all allocated machines in interactive mode:
-`maas deploy -s allocated -i`
+```
+maas deploy -s allocated -i
+```
 
 Deploy all machines using default values and see it loading:
-`maas deploy -s allocated --wait`
+```
+maas deploy -s allocated --wait
+```
